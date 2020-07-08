@@ -1,0 +1,83 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using CityManager.Helper;
+using CityManager.Model;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Refit;
+
+namespace CityManager.Service
+{
+    /// <summary>
+    /// Call the country endpoint defined in the appsetting for the api and get the list of counties by name.
+    /// Using Refit to keep it real.
+    /// Filters define in AppSetting and can be change with requirement - require contract change.
+    /// </summary>
+    public class CountryService : BaseService, ICountryService
+    {
+        /// <summary>
+        /// Service Logger
+        /// </summary>
+        private readonly ILogger<CountryService> _logger;
+
+        /// <summary>
+        /// Countries API Configurations
+        /// </summary>
+        private readonly CountriesApi _apiConfig;
+
+        /// <summary>
+        /// Rest client to call the the endpoint
+        /// </summary>
+        private readonly IRestApiClient<Country, CountryFieldsFilter, string> _client;
+
+        /// <summary>
+        /// Initiates a new instance of <see cref="CountryService" /> class.
+        /// </summary>
+        /// <param name="logger">Service Logger</param>
+        /// <param name="options">AppSetting </param>
+        /// <param name="client">Rest Client</param>
+        public CountryService(ILogger<CountryService> logger, IOptions<AppSettings> options, IRestApiClient<Country, CountryFieldsFilter, string> client)
+        {
+            _logger = logger;
+            _apiConfig = options.Value.CountriesApi;
+            _client = client;
+        }
+
+        /// <summary>
+        /// Call the country endpoint defined in the appsetting for the api and get the list of counties by name.
+        /// Using Refit to keep it real.
+        /// Filters define in AppSetting and can be change with requirement - require contract change.
+        /// </summary>
+        /// <param name="name">Country Name</param>
+        /// <returns> Valid country by name; if any; else error response</returns>
+        public async Task<Country> GetCountryByNameAsync(string name)
+        {
+            try
+            {
+                _logger.LogDebug("Calling {methodName}, Getting countries for {name}", nameof(GetCountryByNameAsync), name);
+
+                CountryFieldsFilter queryParams = new CountryFieldsFilter
+                {
+                    Filter = $"{_apiConfig.Filters}&fullText={_apiConfig.FullText}"
+                };
+
+                Country response = await _client.Get(_apiConfig.Service, queryParams);
+
+                _logger.LogInformation("Country Found! Getting Details - Filter Details {filter}", queryParams.Filter);
+
+                return response;
+            }
+            catch (ValidationApiException validationApiException)
+            {
+                _logger.LogError(validationApiException, "HttpRequestException occurred while calling translation api - {code} {Details}", (int)validationApiException.StatusCode, validationApiException.Message);
+                return GetErrorResponse<Country>((int)validationApiException.StatusCode, validationApiException?.Message);
+            }
+            catch (ApiException exception)
+            {
+                _logger.LogError(exception, "Exception occurred while calling translation api - {code} {Details}", (int)exception.StatusCode, exception.Message);
+                return GetErrorResponse<Country>((int)exception.StatusCode, exception?.Message);
+            }
+
+        }
+    }
+}

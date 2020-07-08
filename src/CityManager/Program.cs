@@ -18,9 +18,22 @@ namespace CityManager
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            })
+            .ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.AddConsole();
+            })
+            .ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                IHostEnvironment hostingEnvironment = hostingContext.HostingEnvironment;
+                IConfigurationBuilder configurationBuilder = config;
+                config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                config.AddJsonFile($"appsettings.{hostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                config.AddEnvironmentVariables();
+            });
     }
 }

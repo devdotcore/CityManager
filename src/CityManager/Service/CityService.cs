@@ -71,6 +71,35 @@ namespace CityManager.Service
             }
         }
 
+        public async Task<ServiceCode> DeleteAsync(int id)
+        {
+            try
+            {
+                _logger.LogInformation("Looking for city by id - {id}", id);
+                City city = await _repository.Get(id);
+
+                if (!(city is null))
+                {
+                    _logger.LogInformation("City found, deleting now...");
+
+                    await _repository.Delete(id);
+
+                    _logger.LogInformation("City deleted successfully");
+
+                    return GetServiceCode<ServiceCode>(StatusCodes.SUCCESS);
+                }
+
+                _logger.LogError("Unable to find city with the id - {id}", id);
+
+                return GetServiceCode<ServiceCode>(StatusCodes.NOT_FOUND);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong, check stack trace!!");
+                return GetServiceCode<ServiceCode>(StatusCodes.SYSTEM_ERROR); ;
+            }
+        }
+
         public async Task<ServiceCode> UpdateAsync(int id, AdditionalCityDetails additionalCityDetails)
         {
             try

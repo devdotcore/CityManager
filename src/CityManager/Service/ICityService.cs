@@ -24,5 +24,12 @@ namespace CityManager.Service
         /// <returns><see cref="ServiceCode"/></returns>
         Task<ServiceCode> UpdateAsync(int id, AdditionalCityDetails additionalCityDetails);
 
+        /// <summary>
+        /// Delete a City record based on city id
+        /// </summary>
+        /// <param name="id">Unique City Id</param>
+        /// <returns><see cref="ServiceCode"/></returns>
+        Task<ServiceCode> DeleteAsync(int id);
+
     }
 }

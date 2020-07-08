@@ -91,11 +91,11 @@ namespace CityManager.Controllers
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.INVALID_REQUEST)]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.NOT_FOUND)]
         [ProducesResponseType((int)StatusCodes.INVALID_REQUEST)]
-        public async Task<ActionResult<ServiceCode>> GetAsync([FromRoute] int id, [FromBody] AdditionalCityDetails additionalCityDetails)
+        public async Task<ActionResult<ServiceCode>> GetAsync([FromRoute] int id)
         {
             if (ModelState.IsValid)
             {
-                ServiceCode response = await _cityService.UpdateAsync(id, additionalCityDetails);
+                ServiceCode response = await _cityService.DeleteAsync(id);
                 return StatusCode((int)response.Code, response.Message);
             }
             else
@@ -103,6 +103,7 @@ namespace CityManager.Controllers
                 return BadRequest(ModelState);
             }
         }
+
 
 
 

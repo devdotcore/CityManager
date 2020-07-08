@@ -15,13 +15,8 @@ namespace CityManager.Service
     /// Using Refit to keep it real.
     /// Filters define in AppSetting and can be change with requirement - require contract change.
     /// </summary>
-    public class CountryService : BaseService, ICountryService
+    public class CountryService : BaseService<CountryService>, ICountryService
     {
-        /// <summary>
-        /// Service Logger
-        /// </summary>
-        private readonly ILogger<CountryService> _logger;
-
         /// <summary>
         /// Countries API Configurations
         /// </summary>
@@ -30,7 +25,7 @@ namespace CityManager.Service
         /// <summary>
         /// Rest client to call the the endpoint
         /// </summary>
-        private readonly IRestApiClient<ICollection<Country>, CountryFieldsFilter, string> _client;
+        private readonly IRestApiClient<ICollection<CountryDetails>, CountryFieldsFilter, string> _client;
 
         /// <summary>
         /// Initiates a new instance of <see cref="CountryService" /> class.
@@ -38,9 +33,8 @@ namespace CityManager.Service
         /// <param name="logger">Service Logger</param>
         /// <param name="options">AppSetting </param>
         /// <param name="client">Rest Client</param>
-        public CountryService(ILogger<CountryService> logger, IOptions<AppSettings> options, IRestApiClient<ICollection<Country>, CountryFieldsFilter, string> client)
+        public CountryService(ILogger<CountryService> logger, IOptions<AppSettings> options, IRestApiClient<ICollection<CountryDetails>, CountryFieldsFilter, string> client) : base(logger)
         {
-            _logger = logger;
             _apiConfig = options.Value.CountriesApi;
             _client = client;
         }
@@ -52,7 +46,7 @@ namespace CityManager.Service
         /// </summary>
         /// <param name="countryName">Country Name</param>
         /// <returns> Valid country by name; if any; else error response</returns>
-        public async Task<Country> GetCountryByNameAsync(string countryName)
+        public async Task<CountryDetails> GetCountryByNameAsync(string countryName)
         {
             try
             {
@@ -67,13 +61,13 @@ namespace CityManager.Service
                 var response = await _client.Get($"{_apiConfig.Service}/{countryName}", queryParams);
 
                 _logger.LogInformation("{count} country(s) found. Getting Details - Filter Details {filter}", response.Count(), queryParams.Filter);
-                
+
                 //Safe check if the country name is in collection
                 var country = response?.Where(x => x.Name.ToUpperInvariant() == countryName.ToUpperInvariant()).FirstOrDefault();
-                if(country is null)
+                if (country is null)
                 {
                     _logger.LogError(StatusCodes.Status404NotFound, "Requested country not found, original response count {count}", response.Count());
-                    return GetErrorResponse<Country>(StatusCodes.Status404NotFound, "Country not found");
+                    return GetErrorResponse<CountryDetails>(StatusCodes.Status404NotFound, "CountryDetails not found");
                 }
 
                 return country;
@@ -81,12 +75,12 @@ namespace CityManager.Service
             catch (ValidationApiException validationApiException)
             {
                 _logger.LogError(validationApiException, "HttpRequestException occurred while calling translation api - {code} {Details}", (int)validationApiException.StatusCode, validationApiException.Message);
-                return GetErrorResponse<Country>((int)validationApiException.StatusCode, validationApiException?.Message);
+                return GetErrorResponse<CountryDetails>((int)validationApiException.StatusCode, validationApiException?.Message);
             }
             catch (ApiException exception)
             {
                 _logger.LogError(exception, "Exception occurred while calling translation api - {code} {Details}", (int)exception.StatusCode, exception.Message);
-                return GetErrorResponse<Country>((int)exception.StatusCode, exception?.Message);
+                return GetErrorResponse<CountryDetails>((int)exception.StatusCode, exception?.Message);
             }
 
         }

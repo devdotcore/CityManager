@@ -17,7 +17,7 @@ namespace CityManager.Tests
 
         private readonly Mock<ILogger<CountryService>> _mockLogger = new Mock<ILogger<CountryService>>();
 
-        private Mock<IRestApiClient<ICollection<Country>, CountryFieldsFilter, string>> _mockClient = new Mock<IRestApiClient<ICollection<Country>, CountryFieldsFilter, string>>();
+        private Mock<IRestApiClient<ICollection<CountryDetails>, CountryFieldsFilter, string>> _mockClient = new Mock<IRestApiClient<ICollection<CountryDetails>, CountryFieldsFilter, string>>();
 
         private readonly Mock<IOptions<AppSettings>> _mockOptions = new Mock<IOptions<AppSettings>>();
 
@@ -68,10 +68,10 @@ namespace CityManager.Tests
             Assert.Equal(StatusCodes.Status404NotFound, response.Error.Code);
         }
 
-        private static List<Country> GetCountries()
+        private static List<CountryDetails> GetCountries()
         {
-            return new List<Country> {
-                new Country {
+            return new List<CountryDetails> {
+                new CountryDetails {
                     Alpha2Code = "2C",
                     Alpha3Code = "3C",
                     Currencies = new List<Currency> {

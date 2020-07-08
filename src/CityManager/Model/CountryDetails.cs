@@ -6,10 +6,10 @@ namespace CityManager.Model
     /// <summary>
     /// Contract for RestCountries API
     /// </summary>
-    public class Country : BaseModel
+    public class CountryDetails : BaseModel
     {
-        public Country() {}
-        public Country(int code, string message)
+        public CountryDetails() {}
+        public CountryDetails(int code, string message)
         {
             if(code > 0)
             {

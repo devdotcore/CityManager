@@ -6,7 +6,7 @@ namespace CityManager.Service
     /// <summary>
     /// City Service will be dealing with all the CRUD operations related to an city
     /// </summary>
-    public interface ICityService
+    public interface ICityService : IBaseService<CityService>
     {
         /// <summary>
         /// Add a city to local storage with the user provided details

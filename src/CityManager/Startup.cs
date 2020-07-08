@@ -1,20 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.Extensions.ExpressionMapping;
 using CityManager.Helper;
 using CityManager.Model;
+using CityManager.Repository;
 using CityManager.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace CityManager
@@ -50,15 +49,28 @@ namespace CityManager
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.Configure<AppSettings>(Configuration)
-            .AddScoped<ICityService, CityService>()
-            .AddScoped<ICountryService, CountryService>();
+            // Add AutoMapper
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddExpressionMapping();
 
-            // Add HTTP Client
+            }, typeof(MappingProfile));
+
+            // Add DbContext
+            services.AddDbContext<CityManagerDbContext>(options =>
+               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.Configure<AppSettings>(Configuration)
+                    .AddScoped<IRepository<City>, CityRepository>()
+                    .AddScoped<ICityService, CityService>()
+                    .AddScoped<ICountryService, CountryService>();
+                    
+
+            // Add HTTP Client - Countries API
             services.AddHttpClient(nameof(CountriesApi), c =>
             {
                 c.BaseAddress = new Uri(Configuration.GetValue<string>($"{nameof(CountriesApi)}:{nameof(CountriesApi.Url)}"));
-            }).AddTypedClient(c => Refit.RestService.For<IRestApiClient<ICollection<Country>, CountryFieldsFilter, string>>(c));
+            }).AddTypedClient(c => Refit.RestService.For<IRestApiClient<ICollection<CountryDetails>, CountryFieldsFilter, string>>(c));
 
         }
 

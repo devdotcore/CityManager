@@ -5,6 +5,8 @@ using CityManager.Model;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Refit;
+using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace CityManager.Service
 {
@@ -28,7 +30,7 @@ namespace CityManager.Service
         /// <summary>
         /// Rest client to call the the endpoint
         /// </summary>
-        private readonly IRestApiClient<Country, CountryFieldsFilter, string> _client;
+        private readonly IRestApiClient<ICollection<Country>, CountryFieldsFilter, string> _client;
 
         /// <summary>
         /// Initiates a new instance of <see cref="CountryService" /> class.
@@ -36,7 +38,7 @@ namespace CityManager.Service
         /// <param name="logger">Service Logger</param>
         /// <param name="options">AppSetting </param>
         /// <param name="client">Rest Client</param>
-        public CountryService(ILogger<CountryService> logger, IOptions<AppSettings> options, IRestApiClient<Country, CountryFieldsFilter, string> client)
+        public CountryService(ILogger<CountryService> logger, IOptions<AppSettings> options, IRestApiClient<ICollection<Country>, CountryFieldsFilter, string> client)
         {
             _logger = logger;
             _apiConfig = options.Value.CountriesApi;
@@ -48,24 +50,33 @@ namespace CityManager.Service
         /// Using Refit to keep it real.
         /// Filters define in AppSetting and can be change with requirement - require contract change.
         /// </summary>
-        /// <param name="name">Country Name</param>
+        /// <param name="countryName">Country Name</param>
         /// <returns> Valid country by name; if any; else error response</returns>
-        public async Task<Country> GetCountryByNameAsync(string name)
+        public async Task<Country> GetCountryByNameAsync(string countryName)
         {
             try
             {
-                _logger.LogDebug("Calling {methodName}, Getting countries for {name}", nameof(GetCountryByNameAsync), name);
+                _logger.LogDebug("Calling {methodName}, Getting countries for {name}", nameof(GetCountryByNameAsync), countryName);
 
                 CountryFieldsFilter queryParams = new CountryFieldsFilter
                 {
-                    Filter = $"{_apiConfig.Filters}&fullText={_apiConfig.FullText}"
+                    Filter = _apiConfig.Filters,
+                    SearchByFullText = _apiConfig.FullText
                 };
 
-                Country response = await _client.Get(_apiConfig.Service, queryParams);
+                var response = await _client.Get($"{_apiConfig.Service}/{countryName}", queryParams);
 
-                _logger.LogInformation("Country Found! Getting Details - Filter Details {filter}", queryParams.Filter);
+                _logger.LogInformation("{count} country(s) found. Getting Details - Filter Details {filter}", response.Count(), queryParams.Filter);
+                
+                //Safe check if the country name is in collection
+                var country = response?.Where(x => x.Name.ToUpperInvariant() == countryName.ToUpperInvariant()).FirstOrDefault();
+                if(country is null)
+                {
+                    _logger.LogError(StatusCodes.Status404NotFound, "Requested country not found, original response count {count}", response.Count());
+                    return GetErrorResponse<Country>(StatusCodes.Status404NotFound, "Country not found");
+                }
 
-                return response;
+                return country;
             }
             catch (ValidationApiException validationApiException)
             {

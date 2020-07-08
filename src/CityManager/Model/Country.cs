@@ -8,6 +8,7 @@ namespace CityManager.Model
     /// </summary>
     public class Country : BaseModel
     {
+        public Country() {}
         public Country(int code, string message)
         {
             if(code > 0)
@@ -29,7 +30,7 @@ namespace CityManager.Model
         /// Currencies for the country
         /// </summary>
         /// <value></value>
-        public List<Currency> Currencies { get; set; }
+        public ICollection<Currency> Currencies { get; set; }
 
         /// <summary>
         /// Country Code 2 Digit
@@ -70,5 +71,8 @@ namespace CityManager.Model
     {
         [AliasAs("fields")]
         public string Filter { get; set; }
+
+        [AliasAs("fullText")]
+        public string SearchByFullText { get; set; }
     }
 }

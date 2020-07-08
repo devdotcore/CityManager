@@ -50,13 +50,15 @@ namespace CityManager
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.Configure<AppSettings>(Configuration);
+            services.Configure<AppSettings>(Configuration)
+            .AddScoped<ICityService, CityService>()
+            .AddScoped<ICountryService, CountryService>();
 
             // Add HTTP Client
-            // services.AddHttpClient(nameof(CountriesApi), c =>
-            // {
-            //     c.BaseAddress = new Uri(Configuration.GetValue<string>($"{nameof(CountriesApi)}:{nameof(CountriesApi.Url)}"));
-            // }).AddTypedClient(c => Refit.RestService.For<IRestApiClient<Country, CountryFieldsFilter, string>>(c));
+            services.AddHttpClient(nameof(CountriesApi), c =>
+            {
+                c.BaseAddress = new Uri(Configuration.GetValue<string>($"{nameof(CountriesApi)}:{nameof(CountriesApi.Url)}"));
+            }).AddTypedClient(c => Refit.RestService.For<IRestApiClient<ICollection<Country>, CountryFieldsFilter, string>>(c));
 
         }
 

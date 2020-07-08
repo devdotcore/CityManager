@@ -11,8 +11,8 @@ namespace CityManager.Service
         /// Using Refit to keep it real.
         /// Filters define in AppSetting and can be change with requirement - require contract change.
         /// </summary>
-        /// <param name="name">Country Name</param>
+        /// <param name="countryName">Country Name</param>
         /// <returns>valid countries by name; if any</returns>
-         Task<Country> GetCountryByNameAsync(string name);
+         Task<Country> GetCountryByNameAsync(string countryName);
     }
 }

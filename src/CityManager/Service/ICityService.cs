@@ -13,7 +13,16 @@ namespace CityManager.Service
         /// Validate an country - return error if invalid country
         /// </summary>
         /// <param name="cityDetails">City Details</param>
-        /// <returns>Add City Response</returns>
-        Task<AddCityResponse> AddAsync(CityDetails cityDetails);
+        /// <returns><see cref="ServiceCode"/></returns>
+        Task<ServiceCode> AddAsync(CityDetails cityDetails);
+
+        /// <summary>
+        /// Update City Details based on city id
+        /// </summary>
+        /// <param name="id">Unique City Id</param>
+        /// <param name="additionalCityDetails">Details to be updated</param>
+        /// <returns><see cref="ServiceCode"/></returns>
+        Task<ServiceCode> UpdateAsync(int id, AdditionalCityDetails additionalCityDetails);
+
     }
 }

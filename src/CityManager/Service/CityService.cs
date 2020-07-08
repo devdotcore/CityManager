@@ -34,7 +34,7 @@ namespace CityManager.Service
         /// </summary>
         /// <param name="cityDetails">City Details</param>
         /// <returns>Add City Response</returns>
-        public async Task<AddCityResponse> AddAsync(CityDetails cityDetails)
+        public async Task<ServiceCode> AddAsync(CityDetails cityDetails)
         {
             try
             {
@@ -42,8 +42,8 @@ namespace CityManager.Service
                 // Get related country details.
                 var country = await _countryService.GetCountryByNameAsync(cityDetails.Country);
 
-                // Country found, when error is null
-                if (country.Error is null)
+                // check if response has any errors
+                if (!country.HasError)
                 {
                     // Get the city details from the request object
                     var city = _mapper.Map<City>(cityDetails);
@@ -57,17 +57,50 @@ namespace CityManager.Service
 
                     _logger.LogInformation("Successfully added city details to the repository");
 
-                    return AddCityResponse.SUCCESS;
+                    return GetServiceCode<ServiceCode>(StatusCodes.SUCCESS);
                 }
 
                 _logger.LogError("Invalid Country Name");
 
-                return AddCityResponse.INVALID_COUNTRY;
+                return country.ServiceCode;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Something went wrong, check stack trace!!");
-                return AddCityResponse.SYSTEM_ERROR;
+                return GetServiceCode<ServiceCode>(StatusCodes.SYSTEM_ERROR); ;
+            }
+        }
+
+        public async Task<ServiceCode> UpdateAsync(int id, AdditionalCityDetails additionalCityDetails)
+        {
+            try
+            {
+                _logger.LogInformation("Looking for city by id - {id}", id);
+                City city = await _repository.Get(id);
+
+                if (!(city is null))
+                {
+                    _logger.LogInformation("City found, updating now...");
+
+                    city.DateEstablished = additionalCityDetails.DateEstablished;
+                    city.EstimatedPopulation = additionalCityDetails.EstimatedPopulation;
+                    city.TouristRating = additionalCityDetails.TouristRating;
+
+                    await _repository.Update(city);
+
+                    _logger.LogInformation("City details updated successfully");
+
+                    return GetServiceCode<ServiceCode>(StatusCodes.SUCCESS);
+                }
+
+                _logger.LogError("Unable to find city with the id - {id}", id);
+
+                return GetServiceCode<ServiceCode>(StatusCodes.NOT_FOUND);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong, check stack trace!!");
+                return GetServiceCode<ServiceCode>(StatusCodes.SYSTEM_ERROR); ;
             }
         }
     }

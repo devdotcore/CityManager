@@ -8,14 +8,16 @@ namespace CityManager.Model
     /// </summary>
     public class CountryDetails : BaseModel
     {
-        public CountryDetails() {}
-        public CountryDetails(int code, string message)
+        public CountryDetails() { }
+        public CountryDetails(int code)
         {
-            if(code > 0)
+            //ToDo: check the condition again?
+            if (code != (int)StatusCodes.SUCCESS)
             {
-                this.Error = new Error {
-                    Code = code,
-                    Message = message
+                this.HasError = true;
+                this.ServiceCode = new ServiceCode
+                {
+                    Code = (StatusCodes)code
                 };
             }
         }

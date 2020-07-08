@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Refit;
 using System.Linq;
-using Microsoft.AspNetCore.Http;
 
 namespace CityManager.Service
 {
@@ -66,8 +65,8 @@ namespace CityManager.Service
                 var country = response?.Where(x => x.Name.ToUpperInvariant() == countryName.ToUpperInvariant()).FirstOrDefault();
                 if (country is null)
                 {
-                    _logger.LogError(StatusCodes.Status404NotFound, "Requested country not found, original response count {count}", response.Count());
-                    return GetErrorResponse<CountryDetails>(StatusCodes.Status404NotFound, "CountryDetails not found");
+                    _logger.LogError((int)StatusCodes.NOT_FOUND, "Country not found!");
+                    return GetServiceCode<CountryDetails>(StatusCodes.NOT_FOUND);
                 }
 
                 return country;
@@ -75,12 +74,12 @@ namespace CityManager.Service
             catch (ValidationApiException validationApiException)
             {
                 _logger.LogError(validationApiException, "HttpRequestException occurred while calling translation api - {code} {Details}", (int)validationApiException.StatusCode, validationApiException.Message);
-                return GetErrorResponse<CountryDetails>((int)validationApiException.StatusCode, validationApiException?.Message);
+                return GetServiceCode<CountryDetails>(StatusCodes.INVALID_REQUEST);
             }
             catch (ApiException exception)
             {
                 _logger.LogError(exception, "Exception occurred while calling translation api - {code} {Details}", (int)exception.StatusCode, exception.Message);
-                return GetErrorResponse<CountryDetails>((int)exception.StatusCode, exception?.Message);
+                return GetServiceCode<CountryDetails>(StatusCodes.SYSTEM_ERROR);
             }
 
         }

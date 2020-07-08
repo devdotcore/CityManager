@@ -29,14 +29,14 @@ namespace CityManager.Service
         }
 
         /// <summary>
-        /// Handle Error Response in Service Layer
+        /// Handle common or error Response in Service Layer
         /// </summary>
         /// <param name="args">Error Params</param>
-        /// <typeparam name="TError">Class Type</typeparam>
+        /// <typeparam name="TServiceCode">Class Type</typeparam>
         /// <returns></returns>
-        public TError GetErrorResponse<TError>(params object[] args)
+        public TServiceCode GetServiceCode<TServiceCode>(params object[] args)
         {
-            return (TError)Activator.CreateInstance(typeof(TError), args);
+            return (TServiceCode)Activator.CreateInstance(typeof(TServiceCode), args);
         }
     }
 }

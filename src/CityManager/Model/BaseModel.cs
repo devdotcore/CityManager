@@ -1,7 +1,9 @@
 namespace CityManager.Model
 {
+
     public class BaseModel
     {
-        public Error Error { get; set; }
+        public bool HasError { get; set; }
+        public ServiceCode ServiceCode { get; set; }
     }
 }

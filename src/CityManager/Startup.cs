@@ -99,7 +99,7 @@ namespace CityManager
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Customer Manager V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "City Manager V1");
                 c.RoutePrefix = string.Empty;
             });
 

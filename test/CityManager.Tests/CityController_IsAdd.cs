@@ -44,7 +44,7 @@ namespace CityManager.Tests
         public async void Valid_CityDetails_ReturnsSuccess()
         {
             //Given
-            CityDetails cityDetails = GetCityDetails();
+            CityDetails cityDetails = TestData.GetCityDetails();
             _cityController = new CityController(_mockLogger.Object, _mockService.Object);
             _mockService.Setup(c => c.AddAsync(It.IsAny<CityDetails>())).ReturnsAsync(new ServiceCode((int)StatusCodes.SUCCESS));
 
@@ -61,7 +61,7 @@ namespace CityManager.Tests
         public async void Invalid_CountryName_ReturnsError()
         {
             //Given
-            CityDetails cityDetails = GetCityDetails();
+            CityDetails cityDetails = TestData.GetCityDetails();
             _cityController = new CityController(_mockLogger.Object, _mockService.Object);
             _mockService.Setup(c => c.AddAsync(It.IsAny<CityDetails>())).ReturnsAsync(new ServiceCode((int)StatusCodes.NOT_FOUND));
 
@@ -74,17 +74,6 @@ namespace CityManager.Tests
             Assert.Equal(StatusCodes.NOT_FOUND.GetDescription(), status.Value);
         }
 
-        private static CityDetails GetCityDetails()
-        {
-            return new CityDetails
-            {
-                Country = "Test",
-                DateEstablished = DateTime.UtcNow.Date.AddYears(-3),
-                EstimatedPopulation = 1010101010,
-                CityName = "TestCity",
-                State = "TestState",
-                TouristRating = 5
-            };
-        }
+
     }
 }

@@ -29,6 +29,15 @@ namespace CityManager.Service
         /// </summary>
         private IRepository<City> _repository;
 
+        /// <summary>
+        /// Initiates a instance of <see cref="CityService"/> class.
+        /// </summary>
+        /// <param name="countryService">Country Service</param>
+        /// <param name="logger">Base Logger</param>
+        /// <param name="repository">City Repository</param>
+        /// <param name="mapper">Base Automapper</param>
+        /// <param name="weatherService">Weather Service</param>
+        /// <returns></returns>
         public CityService(ICountryService countryService, ILogger<CityService> logger, IRepository<City> repository, IMapper mapper, IWeatherService weatherService) : base(logger, mapper)
         {
             _countryService = countryService;
@@ -79,6 +88,11 @@ namespace CityManager.Service
             }
         }
 
+        /// <summary>
+        /// Delete a city record from db by id
+        /// </summary>
+        /// <param name="id">city id</param>
+        /// <returns></returns>
         public async Task<ServiceCode> DeleteAsync(int id)
         {
             try
@@ -103,6 +117,11 @@ namespace CityManager.Service
             }
         }
 
+        /// <summary>
+        /// Search a city by city name
+        /// </summary>
+        /// <param name="cityName">city name</param>
+        /// <returns></returns>
         public async Task<ICollection<SearchResult>> SearchAsync(string cityName)
         {
             try
@@ -122,10 +141,12 @@ namespace CityManager.Service
 
                     // Weather will be same for all the cities by same name??? 
                     var weatherDetails = await _weatherService.GetWeatherByCityNameAsync(cityName);
-
-                    foreach (var city in citiesDetails)
+                    if (weatherDetails != null)
                     {
-                        city.WeatherDetails = weatherDetails;
+                        foreach (var city in citiesDetails)
+                        {
+                            city.WeatherDetails = weatherDetails;
+                        }
                     }
 
                     return citiesDetails;
@@ -143,6 +164,12 @@ namespace CityManager.Service
 
         }
 
+        /// <summary>
+        /// Update city details by city id
+        /// </summary>
+        /// <param name="id">city id</param>
+        /// <param name="additionalCityDetails">additional city details</param>
+        /// <returns></returns>
         public async Task<ServiceCode> UpdateAsync(int id, AdditionalCityDetails additionalCityDetails)
         {
             try

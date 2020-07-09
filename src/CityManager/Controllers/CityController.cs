@@ -7,6 +7,21 @@ using Microsoft.Extensions.Logging;
 
 namespace CityManager.Controllers
 {
+    /// <summary>
+    /// City - Basic CRUD operations
+    ///  - Add          
+    ///    Validate request model based on -
+    ///     - City name and Country name are mandatory
+    ///     - Date should be less than current date
+    ///     - Rating should be between range 1-5
+    ///     - Country name should be valid - API will check against restcountries api to validate
+    ///  - Update
+    ///    Additional Details to be updated based on city id
+    ///  - Delete
+    ///    Delete an city by city id
+    ///  - Search
+    ///    Search a city by name - return all matching details + current weather details
+    /// </summary>
     [ApiController]
     [Produces(contentType: "application/json")]
     [Route("city/")]
@@ -34,13 +49,7 @@ namespace CityManager.Controllers
         }
 
         /// <summary>
-        /// The purpose of this method is to add a new city to the DB
-        /// - Validate request model based on -
-        ///     - City name and Country name are mandatory
-        ///     - Date should be less than current date
-        ///     - Rating should be between range 1-5
-        ///     - Country name should be valid - API will check against restcountries api to validate
-        /// - Once the validation is successfull, city details along with additional country parameters will
+        /// Add a city to the database. Once the validation is successfull. city details along with additional country parameters will
         /// be stored locally for a faster retreval.
         /// </summary>
         /// <param name="cityDetails"><see cref="CityDetails"/></param>
@@ -65,6 +74,12 @@ namespace CityManager.Controllers
             }
         }
 
+        /// <summary>
+        /// Update Additional city details by city id
+        /// </summary>
+        /// <param name="cityId">city id</param>
+        /// <param name="additionalCityDetails"><see cref="AdditionalCityDetails"/></param>
+        /// <returns><see cref="ServiceCode"/></returns>
         [HttpPut]
         [Route("update/{cityId}")]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.SUCCESS)]
@@ -85,6 +100,11 @@ namespace CityManager.Controllers
             }
         }
 
+        /// <summary>
+        /// Delete a city details by id
+        /// </summary>
+        /// <param name="cityId">city id</param>
+        /// <returns><see cref="ServiceCode"/></returns>
         [HttpDelete]
         [Route("delete/{cityId}")]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.SUCCESS)]
@@ -105,6 +125,12 @@ namespace CityManager.Controllers
             }
         }
 
+        /// <summary>
+        /// Search a city by city name, return all details
+        /// call weather api for getting the current weather
+        /// </summary>
+        /// <param name="cityName">city name</param>
+        /// <returns>Collection of <see cref="CityDetails"/></returns>
         [HttpGet]
         [Route("search/{cityName}")]
         [ProducesResponseType(typeof(ICollection<CityDetails>), (int)StatusCodes.SUCCESS)]
@@ -112,21 +138,17 @@ namespace CityManager.Controllers
         [ProducesResponseType(typeof(ICollection<CityDetails>), (int)StatusCodes.INVALID_REQUEST)]
         [ProducesResponseType(typeof(ICollection<CityDetails>), (int)StatusCodes.NOT_FOUND)]
         [ProducesResponseType((int)StatusCodes.INVALID_REQUEST)]
-        public async Task<ActionResult<ICollection<CityDetails>>> SearchAsync([FromRoute]string cityName)
+        public async Task<ActionResult<ICollection<CityDetails>>> SearchAsync([FromRoute] string cityName)
         {
             if (ModelState.IsValid || !string.IsNullOrEmpty(cityName))
             {
                 var response = await _cityService.SearchAsync(cityName);
                 return Ok(response);
             }
-            else 
+            else
             {
                 return BadRequest(ModelState);
             }
         }
-
-
-
-
     }
 }

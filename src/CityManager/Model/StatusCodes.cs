@@ -3,20 +3,20 @@ using System.ComponentModel;
 namespace CityManager.Model
 {
     /// <summary>
-    /// Return api status response code for adding an city to the data base
+    /// API Status codes for different scenarios
     /// </summary>
     public enum StatusCodes 
     {
-        [Description("City details saved successfully.")]
+        [Description("Success.")]
         SUCCESS = 200,
 
-        [Description("End API Invalid Request; Check Logs")]
+        [Description("Invalid Request. Check logs for details.")]
         INVALID_REQUEST = 400,
 
-        [Description("Invalid request, Lookup failed - Doesn't exists in database")]
+        [Description("Not Found, Lookup failed - Doesn't exists in database.")]
         NOT_FOUND = 404,
 
-        [Description("Error while saving details - System Exception, Check Logs.")]
+        [Description("System Exception Occurred. Check logs for details.")]
         SYSTEM_ERROR = 500
     }
 

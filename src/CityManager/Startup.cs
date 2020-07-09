@@ -41,7 +41,13 @@ namespace CityManager
                 {
                     Version = "v1",
                     Title = "City Manager",
-                    Description = "Perform CRUD operations on a city"
+                    Description = "Perform CRUD operations on a city",
+                    License = new OpenApiLicense {
+                        Name = ""
+                    },
+                    Contact = new OpenApiContact {
+                        Name = "Kuldeep S Bhakuni"
+                    }
                 });
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

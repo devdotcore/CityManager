@@ -39,16 +39,16 @@ namespace CityManager.Tests
         public async void Valid_CountryName_ReturnDetails()
         {
             //Given
-            _mockClient.Setup(c => c.Get(It.IsAny<string>(), It.IsAny<CountryParams>())).ReturnsAsync(GetCountries());
+            _mockClient.Setup(c => c.Get(It.IsAny<string>(), It.IsAny<CountryParams>())).ReturnsAsync(TestData.GetCountries());
             _countryService = new CountryService(_mockLogger.Object, _mockOptions.Object, _mockClient.Object);
 
             //When
             var response = await _countryService.GetCountryByNameAsync("Name");
 
             //Then
-            Assert.Equal(GetCountries().FirstOrDefault().Alpha2Code, response.Alpha2Code);
-            Assert.Equal(GetCountries().FirstOrDefault().Alpha3Code, response.Alpha3Code);
-            Assert.Equal(GetCountries().FirstOrDefault().Name, response.Name);
+            Assert.Equal(TestData.GetCountries().FirstOrDefault().Alpha2Code, response.Alpha2Code);
+            Assert.Equal(TestData.GetCountries().FirstOrDefault().Alpha3Code, response.Alpha3Code);
+            Assert.Equal(TestData.GetCountries().FirstOrDefault().Name, response.Name);
             Assert.False(response.HasError);
         }
 
@@ -56,7 +56,7 @@ namespace CityManager.Tests
         public async void Valid_CountryName_NotFound()
         {
             //Given
-            _mockClient.Setup(c => c.Get(It.IsAny<string>(), It.IsAny<CountryParams>())).ReturnsAsync(GetCountries());
+            _mockClient.Setup(c => c.Get(It.IsAny<string>(), It.IsAny<CountryParams>())).ReturnsAsync(TestData.GetCountries());
             _countryService = new CountryService(_mockLogger.Object, _mockOptions.Object, _mockClient.Object);
 
             //When
@@ -65,22 +65,6 @@ namespace CityManager.Tests
             //Then
             Assert.True(response.HasError);
             Assert.Equal(StatusCodes.NOT_FOUND, response.ServiceCode.Code);
-        }
-
-        private static List<CountryDetails> GetCountries()
-        {
-            return new List<CountryDetails> {
-                new CountryDetails {
-                    Alpha2Code = "2C",
-                    Alpha3Code = "3C",
-                    Currencies = new List<Currency> {
-                        new Currency {
-                            Code = "C"
-                        }
-                    },
-                    Name = "Name"
-                }
-            };
         }
     }
 }

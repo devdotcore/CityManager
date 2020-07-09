@@ -24,7 +24,7 @@ namespace CityManager.Service
         /// <summary>
         /// Rest client to call the the endpoint
         /// </summary>
-        private readonly IRestApiClient<ICollection<CountryDetails>, CountryFieldsFilter, string> _client;
+        private readonly IRestApiClient<ICollection<CountryDetails>, CountryParams, string> _client;
 
         /// <summary>
         /// Initiates a new instance of <see cref="CountryService" /> class.
@@ -32,7 +32,7 @@ namespace CityManager.Service
         /// <param name="logger">Service Logger</param>
         /// <param name="options">AppSetting </param>
         /// <param name="client">Rest Client</param>
-        public CountryService(ILogger<CountryService> logger, IOptions<AppSettings> options, IRestApiClient<ICollection<CountryDetails>, CountryFieldsFilter, string> client) : base(logger)
+        public CountryService(ILogger<CountryService> logger, IOptions<AppSettings> options, IRestApiClient<ICollection<CountryDetails>, CountryParams, string> client) : base(logger)
         {
             _apiConfig = options.Value.CountriesApi;
             _client = client;
@@ -51,15 +51,15 @@ namespace CityManager.Service
             {
                 _logger.LogDebug("Calling {methodName}, Getting countries for {name}", nameof(GetCountryByNameAsync), countryName);
 
-                CountryFieldsFilter queryParams = new CountryFieldsFilter
+                CountryParams countryParams = new CountryParams
                 {
                     Filter = _apiConfig.Filters,
                     SearchByFullText = _apiConfig.FullText
                 };
 
-                var response = await _client.Get($"{_apiConfig.Service}/{countryName}", queryParams);
+                var response = await _client.Get($"{_apiConfig.Service}/{countryName}", countryParams);
 
-                _logger.LogInformation("{count} country(s) found. Getting Details - Filter Details {filter}", response.Count(), queryParams.Filter);
+                _logger.LogInformation("{count} country(s) found. Getting Details - Filter Details {filter}", response.Count(), countryParams.Filter);
 
                 //Safe check if the country name is in collection
                 var country = response?.Where(x => x.Name.ToUpperInvariant() == countryName.ToUpperInvariant()).FirstOrDefault();

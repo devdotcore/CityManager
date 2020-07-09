@@ -35,12 +35,16 @@ namespace CityManager.Repository
 
         public async Task<City> Get(int id)
         {
-            return await context.Set<City>().FindAsync(id);
+            return await context.Set<City>()
+                            .FindAsync(id);
         }
 
         public async Task<List<City>> GetAll()
         {
-            return await context.Set<City>().ToListAsync();
+            return await context.Set<City>()
+                            .Include(c => c.Country)
+                            .AsNoTracking()
+                            .ToListAsync();
         }
 
         public async Task<City> Update(City entity)

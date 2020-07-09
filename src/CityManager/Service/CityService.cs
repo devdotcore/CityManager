@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using CityManager.Model;
 using CityManager.Repository;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace CityManager.Service
 {
@@ -18,14 +20,20 @@ namespace CityManager.Service
         private ICountryService _countryService;
 
         /// <summary>
+        /// The Weather Service
+        /// </summary>
+        private IWeatherService _weatherService;
+
+        /// <summary>
         /// City CRUD operation repository
         /// </summary>
         private IRepository<City> _repository;
 
-        public CityService(ICountryService countryService, ILogger<CityService> logger, IRepository<City> repository, IMapper mapper) : base(logger, mapper)
+        public CityService(ICountryService countryService, ILogger<CityService> logger, IRepository<City> repository, IMapper mapper, IWeatherService weatherService) : base(logger, mapper)
         {
             _countryService = countryService;
             _repository = repository;
+            _weatherService = weatherService;
         }
 
         /// <summary>
@@ -75,29 +83,64 @@ namespace CityManager.Service
         {
             try
             {
-                _logger.LogInformation("Looking for city by id - {id}", id);
-                City city = await _repository.Get(id);
+                _logger.LogInformation("Deleting city with the id - {id}", id);
 
-                if (!(city is null))
+                City city = await _repository.Delete(id); ;
+
+                if (city is null)
                 {
-                    _logger.LogInformation("City found, deleting now...");
-
-                    await _repository.Delete(id);
-
-                    _logger.LogInformation("City deleted successfully");
-
-                    return GetServiceCode<ServiceCode>(StatusCodes.SUCCESS);
+                    _logger.LogError("Unable to find city with the id - {id}", id);
+                    return GetServiceCode<ServiceCode>(StatusCodes.NOT_FOUND);
                 }
 
-                _logger.LogError("Unable to find city with the id - {id}", id);
-
-                return GetServiceCode<ServiceCode>(StatusCodes.NOT_FOUND);
+                _logger.LogInformation("City deleted successfully");
+                return GetServiceCode<ServiceCode>(StatusCodes.SUCCESS);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Something went wrong, check stack trace!!");
                 return GetServiceCode<ServiceCode>(StatusCodes.SYSTEM_ERROR); ;
             }
+        }
+
+        public async Task<ICollection<SearchResult>> SearchAsync(string cityName)
+        {
+            try
+            {
+                _logger.LogInformation("Searching for city by name - {cityName}", cityName);
+
+                //find matching cities in the database
+                var cities = (from city in (await _repository.GetAll())
+                              where city.CityName.Equals(cityName, StringComparison.InvariantCultureIgnoreCase)
+                              select city);
+
+                if (cities.Count() > 0)
+                {
+                    var citiesDetails = _mapper.Map<ICollection<SearchResult>>(cities);
+
+                    _logger.LogInformation("Cities found; getting weather update");
+
+                    // Weather will be same for all the cities by same name??? 
+                    var weatherDetails = await _weatherService.GetWeatherByCityNameAsync(cityName);
+
+                    foreach (var city in citiesDetails)
+                    {
+                        city.WeatherDetails = weatherDetails;
+                    }
+
+                    return citiesDetails;
+                }
+
+                _logger.LogError("Unable to find city with the id - {id}");
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong, check stack trace!!");
+                return null;
+            }
+
         }
 
         public async Task<ServiceCode> UpdateAsync(int id, AdditionalCityDetails additionalCityDetails)

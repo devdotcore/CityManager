@@ -2,7 +2,6 @@ using System;
 using CityManager.Controllers;
 using CityManager.Model;
 using CityManager.Service;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -31,14 +30,14 @@ namespace CityManager.Tests
             //Given
             CityDetails cityDetails = new CityDetails();
             _cityController = new CityController(_mockLogger.Object, _mockService.Object);
-            _cityController.ModelState.AddModelError(nameof(cityDetails.Name), "City Name is Required");
+            _cityController.ModelState.AddModelError(nameof(cityDetails.CityName), "City Name is Required");
 
             //When
             var response = await _cityController.PostAsync(cityDetails);
             var status = response.Result as ObjectResult;
 
             //Then
-            Assert.Equal(StatusCodes.Status400BadRequest, status.StatusCode);
+            Assert.Equal((int)StatusCodes.INVALID_REQUEST, status.StatusCode);
         }
 
         [Fact]
@@ -47,15 +46,15 @@ namespace CityManager.Tests
             //Given
             CityDetails cityDetails = GetCityDetails();
             _cityController = new CityController(_mockLogger.Object, _mockService.Object);
-            _mockService.Setup(c => c.AddAsync(It.IsAny<CityDetails>())).ReturnsAsync(AddCityResponse.SUCCESS);
+            _mockService.Setup(c => c.AddAsync(It.IsAny<CityDetails>())).ReturnsAsync(new ServiceCode((int)StatusCodes.SUCCESS));
 
             //When
             var response = await _cityController.PostAsync(cityDetails);
             var status = response.Result as ObjectResult;
            
             //Then
-            Assert.Equal(StatusCodes.Status201Created, status.StatusCode);
-            Assert.Equal(AddCityResponse.SUCCESS.GetDescription(), status.Value);
+            Assert.Equal((int)StatusCodes.SUCCESS, status.StatusCode);
+            Assert.Equal(StatusCodes.SUCCESS.GetDescription(), status.Value);
         }
 
         [Fact]
@@ -64,15 +63,15 @@ namespace CityManager.Tests
             //Given
             CityDetails cityDetails = GetCityDetails();
             _cityController = new CityController(_mockLogger.Object, _mockService.Object);
-            _mockService.Setup(c => c.AddAsync(It.IsAny<CityDetails>())).ReturnsAsync(AddCityResponse.INVALID_COUNTRY);
+            _mockService.Setup(c => c.AddAsync(It.IsAny<CityDetails>())).ReturnsAsync(new ServiceCode((int)StatusCodes.NOT_FOUND));
 
             //When
             var response = await _cityController.PostAsync(cityDetails);
             var status = response.Result as ObjectResult;
            
             //Then
-            Assert.Equal(StatusCodes.Status400BadRequest, status.StatusCode);
-            Assert.Equal(AddCityResponse.INVALID_COUNTRY.GetDescription(), status.Value);
+            Assert.Equal((int)StatusCodes.NOT_FOUND, status.StatusCode);
+            Assert.Equal(StatusCodes.NOT_FOUND.GetDescription(), status.Value);
         }
 
         private static CityDetails GetCityDetails()
@@ -82,7 +81,7 @@ namespace CityManager.Tests
                 Country = "Test",
                 DateEstablished = DateTime.UtcNow.Date.AddYears(-3),
                 EstimatedPopulation = 1010101010,
-                Name = "TestCity",
+                CityName = "TestCity",
                 State = "TestState",
                 TouristRating = 5
             };

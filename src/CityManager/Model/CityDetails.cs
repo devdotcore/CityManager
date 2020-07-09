@@ -14,14 +14,15 @@ namespace CityManager.Model
         /// <value></value>
         [JsonPropertyName("name")]
         [Required(ErrorMessage = "City name is required")]
-        [StringLength(50)]
-        public string Name { get; set; }
+        [StringLength(200)]
+        public string CityName { get; set; }
 
         /// <summary>
         /// City Sub Region Name
         /// </summary>
         /// <value></value>
         [JsonPropertyName("state")]
+        [StringLength(200)]
         public string State { get; set; }
 
         /// <summary>
@@ -30,7 +31,7 @@ namespace CityManager.Model
         /// <value></value>
         [JsonPropertyName("country")]
         [Required(ErrorMessage = "Country name is required")]
-        [StringLength(50)]
+        [StringLength(200)]
         public string Country { get; set; }
 
     }

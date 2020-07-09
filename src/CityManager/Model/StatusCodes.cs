@@ -7,16 +7,16 @@ namespace CityManager.Model
     /// </summary>
     public enum StatusCodes 
     {
-        [Description("City Details Successfully saved to provided storage.")]
+        [Description("City details saved successfully.")]
         SUCCESS = 200,
 
         [Description("End API Invalid Request; Check Logs")]
         INVALID_REQUEST = 400,
 
-        [Description("Invalid request, lookup failed - unable to find")]
+        [Description("Invalid request, Lookup failed - Doesn't exists in database")]
         NOT_FOUND = 404,
 
-        [Description("Error while saving details - System Exceptions, Check Logs.")]
+        [Description("Error while saving details - System Exception, Check Logs.")]
         SYSTEM_ERROR = 500
     }
 

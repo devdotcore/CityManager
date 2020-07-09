@@ -8,11 +8,7 @@ namespace CityManager.Model
         public ServiceCode() { }
         public ServiceCode(int code)
         {
-            //ToDo: check the condition again?
-            if (code != (int)StatusCodes.SUCCESS)
-            {
-                this.Code = (StatusCodes)code;
-            }
+            this.Code = (StatusCodes)code;
         }
         /// <summary>
         /// Get Service Code

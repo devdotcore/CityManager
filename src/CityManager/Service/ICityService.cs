@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CityManager.Model;
 
@@ -30,6 +31,13 @@ namespace CityManager.Service
         /// <param name="id">Unique City Id</param>
         /// <returns><see cref="ServiceCode"/></returns>
         Task<ServiceCode> DeleteAsync(int id);
+
+        /// <summary>
+        /// Search a collection of city records based on city name
+        /// </summary>
+        /// <param name="cityName">Unique City Id</param>
+        /// <returns><see cref="CityDetails"/></returns>
+        Task<ICollection<SearchResult>> SearchAsync(string cityName);
 
     }
 }

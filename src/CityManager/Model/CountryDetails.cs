@@ -11,7 +11,7 @@ namespace CityManager.Model
         public CountryDetails() { }
         public CountryDetails(int code)
         {
-            //ToDo: check the condition again?
+            // Populate only when error
             if (code != (int)StatusCodes.SUCCESS)
             {
                 this.HasError = true;
@@ -55,21 +55,9 @@ namespace CityManager.Model
         /// <value></value>
         public string Code { get; set; }
 
-        /// <summary>
-        /// Currency Name
-        /// </summary>
-        /// <value></value>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Currency Symbol
-        /// </summary>
-        /// <value></value>
-        public string Symbol { get; set; }
-
     }
 
-    public class CountryFieldsFilter
+    public class CountryParams
     {
         [AliasAs("fields")]
         public string Filter { get; set; }

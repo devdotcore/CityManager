@@ -63,14 +63,21 @@ namespace CityManager
             services.Configure<AppSettings>(Configuration)
                     .AddScoped<IRepository<City>, CityRepository>()
                     .AddScoped<ICityService, CityService>()
-                    .AddScoped<ICountryService, CountryService>();
+                    .AddScoped<ICountryService, CountryService>()
+                    .AddScoped<IWeatherService, WeatherService>();
                     
-
             // Add HTTP Client - Countries API
             services.AddHttpClient(nameof(CountriesApi), c =>
             {
                 c.BaseAddress = new Uri(Configuration.GetValue<string>($"{nameof(CountriesApi)}:{nameof(CountriesApi.Url)}"));
-            }).AddTypedClient(c => Refit.RestService.For<IRestApiClient<ICollection<CountryDetails>, CountryFieldsFilter, string>>(c));
+            }).AddTypedClient(c => Refit.RestService.For<IRestApiClient<ICollection<CountryDetails>, CountryParams, string>>(c));
+
+            // Add HTTP Client - Weather API
+            services.AddHttpClient(nameof(WeatherApi), c =>
+            {
+                c.BaseAddress = new Uri(Configuration.GetValue<string>($"{nameof(WeatherApi)}:{nameof(WeatherApi.Url)}"));
+            }).AddTypedClient(c => Refit.RestService.For<IRestApiClient<WeatherDetails, WeatherParams, string>>(c));
+
 
         }
 

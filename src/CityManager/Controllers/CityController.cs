@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CityManager.Model;
 using CityManager.Service;
@@ -65,17 +66,37 @@ namespace CityManager.Controllers
         }
 
         [HttpPut]
-        [Route("{id}/update")]
+        [Route("update/{cityId}")]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.SUCCESS)]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.SYSTEM_ERROR)]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.INVALID_REQUEST)]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.NOT_FOUND)]
         [ProducesResponseType((int)StatusCodes.INVALID_REQUEST)]
-        public async Task<ActionResult<ServiceCode>> PutAsync([FromRoute] int id, [FromBody] AdditionalCityDetails additionalCityDetails)
+        public async Task<ActionResult<ServiceCode>> PutAsync([FromRoute] int cityId, [FromBody] AdditionalCityDetails additionalCityDetails)
         {
             if (ModelState.IsValid)
             {
-                ServiceCode response = await _cityService.UpdateAsync(id, additionalCityDetails);
+                ServiceCode response = await _cityService.UpdateAsync(cityId, additionalCityDetails);
+                return StatusCode((int)response.Code, response.Message);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete/{cityId}")]
+        [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.SUCCESS)]
+        [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.SYSTEM_ERROR)]
+        [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.INVALID_REQUEST)]
+        [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.NOT_FOUND)]
+        [ProducesResponseType((int)StatusCodes.INVALID_REQUEST)]
+        public async Task<ActionResult<ServiceCode>> GetAsync([FromRoute] int cityId)
+        {
+            if (ModelState.IsValid)
+            {
+                ServiceCode response = await _cityService.DeleteAsync(cityId);
                 return StatusCode((int)response.Code, response.Message);
             }
             else
@@ -85,20 +106,20 @@ namespace CityManager.Controllers
         }
 
         [HttpGet]
-        [Route("{id}/delete")]
-        [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.SUCCESS)]
-        [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.SYSTEM_ERROR)]
-        [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.INVALID_REQUEST)]
-        [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.NOT_FOUND)]
+        [Route("search/{cityName}")]
+        [ProducesResponseType(typeof(ICollection<CityDetails>), (int)StatusCodes.SUCCESS)]
+        [ProducesResponseType(typeof(ICollection<CityDetails>), (int)StatusCodes.SYSTEM_ERROR)]
+        [ProducesResponseType(typeof(ICollection<CityDetails>), (int)StatusCodes.INVALID_REQUEST)]
+        [ProducesResponseType(typeof(ICollection<CityDetails>), (int)StatusCodes.NOT_FOUND)]
         [ProducesResponseType((int)StatusCodes.INVALID_REQUEST)]
-        public async Task<ActionResult<ServiceCode>> GetAsync([FromRoute] int id)
+        public async Task<ActionResult<ICollection<CityDetails>>> SearchAsync([FromRoute]string cityName)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid || !string.IsNullOrEmpty(cityName))
             {
-                ServiceCode response = await _cityService.DeleteAsync(id);
-                return StatusCode((int)response.Code, response.Message);
+                var response = await _cityService.SearchAsync(cityName);
+                return Ok(response);
             }
-            else
+            else 
             {
                 return BadRequest(ModelState);
             }

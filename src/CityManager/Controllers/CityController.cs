@@ -55,7 +55,7 @@ namespace CityManager.Controllers
         /// <param name="cityDetails"><see cref="CityDetails"/></param>
         /// <returns><see cref="ServiceCode"/></returns>
         [HttpPost]
-        [Route("add")]
+        [Route("")]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.SUCCESS)]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.SYSTEM_ERROR)]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.INVALID_REQUEST)]
@@ -81,7 +81,7 @@ namespace CityManager.Controllers
         /// <param name="additionalCityDetails"><see cref="AdditionalCityDetails"/></param>
         /// <returns><see cref="ServiceCode"/></returns>
         [HttpPut]
-        [Route("update/{cityId}")]
+        [Route("{cityId}")]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.SUCCESS)]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.SYSTEM_ERROR)]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.INVALID_REQUEST)]
@@ -106,7 +106,7 @@ namespace CityManager.Controllers
         /// <param name="cityId">city id</param>
         /// <returns><see cref="ServiceCode"/></returns>
         [HttpDelete]
-        [Route("delete/{cityId}")]
+        [Route("{cityId}")]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.SUCCESS)]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.SYSTEM_ERROR)]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.INVALID_REQUEST)]
@@ -132,7 +132,7 @@ namespace CityManager.Controllers
         /// <param name="cityName">city name</param>
         /// <returns>Collection of <see cref="CityDetails"/></returns>
         [HttpGet]
-        [Route("search/{cityName}")]
+        [Route("{cityName}")]
         [ProducesResponseType(typeof(ICollection<CityDetails>), (int)StatusCodes.SUCCESS)]
         [ProducesResponseType(typeof(ICollection<CityDetails>), (int)StatusCodes.SYSTEM_ERROR)]
         [ProducesResponseType(typeof(ICollection<CityDetails>), (int)StatusCodes.INVALID_REQUEST)]

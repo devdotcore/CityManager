@@ -10,20 +10,8 @@ using CityManager.Helper;
 
 namespace CityManager.Tests
 {
-    public class CityController_IsAdd
+    public class CityController_IsAdd : CityController_TestSetup
     {
-        private CityController _cityController;
-
-        private readonly Mock<ILogger<CityController>> _mockLogger;
-
-        private readonly Mock<ICityService> _mockService;
-
-        public CityController_IsAdd()
-        {
-            _mockLogger = new Mock<ILogger<CityController>>();
-            _mockService = new Mock<ICityService>();
-        }
-
         [Fact]
         public async void Invalid_CityDetails_ReturnsBadRequest()
         {
@@ -73,7 +61,5 @@ namespace CityManager.Tests
             Assert.Equal((int)StatusCodes.NOT_FOUND, status.StatusCode);
             Assert.Equal(StatusCodes.NOT_FOUND.GetDescription(), status.Value);
         }
-
-
     }
 }

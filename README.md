@@ -108,6 +108,8 @@ SAMPLE RESPONSE -
 ### Setup
 The following steps are for runnning the codebase locally on a Mac using Visual Studio Code, you find similar or better options online.
 
+**The code use EFCore data first approach, please make sure to change connection string in appsetting.json to point the sqlserver with right permission. Migration will be applied on application start.**
+
 1. Download and install [.Net Core 3.1.202](https://dotnet.microsoft.com/download/dotnet-core/3.1) SDK on your machine.
 2. Dowload this repo into a working directory and take latest from master branch
 ```markdown
@@ -144,3 +146,5 @@ API should be available locally -
 ```markdown
 https://localhost:[PORT_NUMBER]/
 ```
+
+Copyright (c) 2020, Kuldeep S Bhakuni

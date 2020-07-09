@@ -1,5 +1,6 @@
-## City Manager API v1 ![.NET Core](https://github.com/devdotcore/CityManager/workflows/.NET%20Core/badge.svg)
+## City Manager API v1 [![Build Status](https://dev.azure.com/devcore-org/citymanagerv1/_apis/build/status/citymanagerv1%20-%20CI?branchName=master)](https://dev.azure.com/devcore-org/citymanagerv1/_build/latest?definitionId=10&branchName=master)
 
+![.NET Core](https://github.com/devdotcore/CityManager/workflows/.NET%20Core/badge.svg)
 
 The purpose of this API is to add city details to the database and perform CRUD operations like add, update, delete and search. While adding the city details, API asks for the country name which is validated again the list here [Country Name](https://restcountries.eu/rest/v2/all?fields=name;), if the the country name does not match, it will return a error.
 
@@ -69,38 +70,15 @@ SAMPLE RESPONSE -
         }
       ],
       "main": {
-        "temp": 19.15
+        "temp": 18.15
       }
     },
     "name": "Bath",
     "state": "Somerset",
     "country": "United Kingdom of Great Britain and Northern Ireland",
     "touristRating": 5,
-    "dateEstablished": "2010-07-09T11:00:22.553",
-    "estimatedPopulation": 600000
-  },
-  {
-    "cityId": 2,
-    "countryCode2Digit": "GB",
-    "countryCode3Digit": "GBR",
-    "currencyCode": "GBP",
-    "weatherDetails": {
-      "weather": [
-        {
-          "main": "Clouds",
-          "description": "overcast clouds"
-        }
-      ],
-      "main": {
-        "temp": 19.15
-      }
-    },
-    "name": "Bath",
-    "state": "Somerset",
-    "country": "United Kingdom of Great Britain and Northern Ireland",
-    "touristRating": 5,
-    "dateEstablished": "2010-07-09T11:00:22.553",
-    "estimatedPopulation": 600000
+    "dateEstablished": "2010-07-09T16:17:22.62",
+    "estimatedPopulation": 560000
   }
 ]
 ```

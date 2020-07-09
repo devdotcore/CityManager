@@ -1,9 +1,10 @@
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS builder  
 
-EXPOSE 80:8443
-EXPOSE 8443:8443
-EXPOSE 443:8443
+# EXPOSE 5000:8443
+# EXPOSE 8443:8443
+# EXPOSE 443:8443
+EXPOSE 80
 
 WORKDIR /app  
 
@@ -34,5 +35,5 @@ RUN dotnet publish "./src/CityManager/CityManager.csproj" -c Release -o /publish
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 
 WORKDIR /publish  
 COPY --from=builder /publish .  
-ENV ASPNETCORE_URLS="http://0.0.0.0:80"
+ENV ASPNETCORE_URLS="http://0.0.0.0:5000"
 ENTRYPOINT ["dotnet", "CityManager.dll"]

@@ -15,7 +15,7 @@ Additionally, This API uses [Rest Countries API](https://restcountries.eu/) to g
   * City name and Country name are mandatory
   * Date should be less than current date
   * Rating should be between range 1-5
-  * Country name should be valid - API will check against restcountries api to validateOnce the validation is successfull. city details along with additional country parameters will be stored locally for a faster retreval.
+  * Country name should be valid - API will check against [Country Name](https://restcountries.eu/rest/v2/all?fields=name;) to validate. Once the validation is successful, city details along with additional country parameters will be stored in the DB for a faster retrieval.
 
 ```markdown
 POST /city/add
@@ -33,7 +33,7 @@ POST /city/add
 * **Update** city details by city id 
 
 ```markdown
-PUT /city/update/{cityId}
+PUT /city/{cityId}
 
 {
   "touristRating": 0,
@@ -45,12 +45,12 @@ PUT /city/update/{cityId}
 * **Delete** a city by city id 
 
 ```markdown
-DELETE /city/delete/{cityId}
+DELETE /city/{cityId}
 ```
 * **Search** city by name, return all details related to a city including additional country and current weather details details
 
 ```markdown
-GET /city/search/{cityName}
+GET /city/{cityName}
 ```
 
 ```markdown
@@ -84,12 +84,12 @@ SAMPLE RESPONSE -
 ```
 
 ### Setup
-The following steps are for runnning the codebase locally on a Mac using Visual Studio Code, you find similar or better options online.
+The following steps are for running the codebase locally on a Mac using Visual Studio Code, you find similar or better options online.
 
-**The code use EFCore data first approach, please make sure to change connection string in appsetting.json to point the sqlserver with right permission. Migration will be applied on application start.**
+**The code use EFCore data first approach, please make sure to change connection string in appsettings.json to point the sql server with right permission. EF Migration will be applied on application start.**
 
 1. Download and install [.Net Core 3.1.202](https://dotnet.microsoft.com/download/dotnet-core/3.1) SDK on your machine.
-2. Dowload this repo into a working directory and take latest from master branch
+2. Download this repo into a working directory and take latest from master branch
 ```markdown
 git clone https://github.com/devdotcore/CityManager.git
 ```

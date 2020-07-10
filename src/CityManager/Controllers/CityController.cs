@@ -134,9 +134,9 @@ namespace CityManager.Controllers
         [HttpGet]
         [Route("{cityName}")]
         [ProducesResponseType(typeof(ICollection<SearchResult>), (int)StatusCodes.SUCCESS)]
-        [ProducesResponseType(typeof(ICollection<SearchResult>), (int)StatusCodes.SYSTEM_ERROR)]
-        [ProducesResponseType(typeof(ICollection<SearchResult>), (int)StatusCodes.INVALID_REQUEST)]
-        [ProducesResponseType(typeof(ICollection<SearchResult>), (int)StatusCodes.NOT_FOUND)]
+        [ProducesResponseType((int)StatusCodes.SYSTEM_ERROR)]
+        [ProducesResponseType((int)StatusCodes.INVALID_REQUEST)]
+        [ProducesResponseType((int)StatusCodes.NOT_FOUND)]
         [ProducesResponseType((int)StatusCodes.INVALID_REQUEST)]
         public async Task<ActionResult<ICollection<SearchResult>>> GetAsync([FromRoute] string cityName)
         {

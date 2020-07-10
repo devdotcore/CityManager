@@ -112,9 +112,9 @@ namespace CityManager.Controllers
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.INVALID_REQUEST)]
         [ProducesResponseType(typeof(ServiceCode), (int)StatusCodes.NOT_FOUND)]
         [ProducesResponseType((int)StatusCodes.INVALID_REQUEST)]
-        public async Task<ActionResult<ServiceCode>> GetAsync([FromRoute] int cityId)
+        public async Task<ActionResult<ServiceCode>> DeleteAsync([FromRoute] int cityId)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && cityId > 0)
             {
                 ServiceCode response = await _cityService.DeleteAsync(cityId);
                 return StatusCode((int)response.Code, response.Message);
@@ -130,19 +130,19 @@ namespace CityManager.Controllers
         /// call weather api for getting the current weather
         /// </summary>
         /// <param name="cityName">city name</param>
-        /// <returns>Collection of <see cref="CityDetails"/></returns>
+        /// <returns>Collection of <see cref="SearchResult"/></returns>
         [HttpGet]
         [Route("{cityName}")]
-        [ProducesResponseType(typeof(ICollection<CityDetails>), (int)StatusCodes.SUCCESS)]
-        [ProducesResponseType(typeof(ICollection<CityDetails>), (int)StatusCodes.SYSTEM_ERROR)]
-        [ProducesResponseType(typeof(ICollection<CityDetails>), (int)StatusCodes.INVALID_REQUEST)]
-        [ProducesResponseType(typeof(ICollection<CityDetails>), (int)StatusCodes.NOT_FOUND)]
+        [ProducesResponseType(typeof(ICollection<SearchResult>), (int)StatusCodes.SUCCESS)]
+        [ProducesResponseType(typeof(ICollection<SearchResult>), (int)StatusCodes.SYSTEM_ERROR)]
+        [ProducesResponseType(typeof(ICollection<SearchResult>), (int)StatusCodes.INVALID_REQUEST)]
+        [ProducesResponseType(typeof(ICollection<SearchResult>), (int)StatusCodes.NOT_FOUND)]
         [ProducesResponseType((int)StatusCodes.INVALID_REQUEST)]
-        public async Task<ActionResult<ICollection<CityDetails>>> SearchAsync([FromRoute] string cityName)
+        public async Task<ActionResult<ICollection<SearchResult>>> GetAsync([FromRoute] string cityName)
         {
-            if (ModelState.IsValid || !string.IsNullOrEmpty(cityName))
+            if (ModelState.IsValid && !string.IsNullOrEmpty(cityName))
             {
-                var response = await _cityService.SearchAsync(cityName);
+                var response = await _cityService.SearchAsync(cityName.Trim());
                 return Ok(response);
             }
             else

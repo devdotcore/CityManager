@@ -124,5 +124,3 @@ API should be available locally -
 ```markdown
 https://localhost:[PORT_NUMBER]/
 ```
-
-Copyright (c) 2020, Kuldeep S Bhakuni

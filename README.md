@@ -1,3 +1,4 @@
+[![Board Status](https://dev.azure.com/erkuldeepbhakuni/d777e7d5-520d-4861-a79c-d5ff56beef9f/17729168-c96d-424e-8f01-aef9e902eaef/_apis/work/boardbadge/112ecba2-977d-4d33-88fa-816c34446e27)](https://dev.azure.com/erkuldeepbhakuni/d777e7d5-520d-4861-a79c-d5ff56beef9f/_boards/board/t/17729168-c96d-424e-8f01-aef9e902eaef/Microsoft.RequirementCategory)
 ## City Manager API v1 [![Build Status](https://dev.azure.com/devcore-org/citymanagerv1/_apis/build/status/citymanagerv1%20-%20CI?branchName=master)](https://dev.azure.com/devcore-org/citymanagerv1/_build/latest?definitionId=10&branchName=master)
 
 ![.NET Core](https://github.com/devdotcore/CityManager/workflows/.NET%20Core/badge.svg)

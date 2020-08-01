@@ -1,9 +1,10 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using MySql.Data.EntityFrameworkCore.Metadata;
 
 namespace CityManager.Migrations
 {
-    public partial class InitialDbSetup : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,8 +13,8 @@ namespace CityManager.Migrations
                 columns: table => new
                 {
                     CityId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    CityName = table.Column<string>(nullable: true),
                     State = table.Column<string>(nullable: true),
                     TouristRating = table.Column<short>(nullable: false),
                     DateEstablished = table.Column<DateTime>(nullable: false),
@@ -29,7 +30,7 @@ namespace CityManager.Migrations
                 columns: table => new
                 {
                     CountryId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
                     Alpha2Code = table.Column<string>(nullable: true),
                     Alpha3Code = table.Column<string>(nullable: true),

@@ -64,7 +64,7 @@ namespace CityManager
 
             // Add DbContext
             services.AddDbContext<CityManagerDbContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+               options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
 
             services.Configure<AppSettings>(Configuration)
                     .AddScoped<IRepository<City>, CityRepository>()
